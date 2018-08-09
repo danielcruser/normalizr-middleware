@@ -4,7 +4,7 @@ const normalizrMiddleware = config => store => next => action => {
   let match;
   if (!action.type){
     console.log(action)
-    throw new Error(`The action has no type. You probable forgot to resolve the mapping between normalized data and a new action type.`)
+    throw new Error(`The action has no type. You probably forgot to resolve the mapping between normalized data and a new action type. This usually happens when there is data that can be unexpectedly normalized. Make sure all of your schemas are accounted for in your schemaDispatchResolver.`)
     return next(action)
   }
   if (action.type.startsWith('RESOLVED')) {
