@@ -56,7 +56,7 @@ allow future flexibility.
 ```
 `createActionResolverCase`: A utility function that preps data for consumption by defaultNormalizrResolver.
 ```
-(slice, schema) => ({ slice, schema})
+([slice, schema]) => ({ slice, schema })
 ```
 
 `createStalenessResolver`: A utility higher order function that creates a `stalenessResolver`
@@ -102,7 +102,8 @@ const selectFetchTeamsSuccess = action => action.payload.response.teams;
 
 export const actionResolver = {
   FETCH_TEAMS_SUCCESS: () =>
-    createActionResolverCase(selectFetchTeamsSuccess, [team])
+    [[selectFetchTeamsSuccess, [team]]].map(createActionResolverCase)
+    // array of arrays in case we want to select/act onx1 multiple unrelated parts of the action
 };
 
 ```
