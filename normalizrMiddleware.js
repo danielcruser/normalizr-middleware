@@ -2,10 +2,9 @@ const normalizrMiddleware = config => store => next => action => {
   const { type, payload } = action;
   const { active, targets, schemas, resolve } = config;
   let match;
-  if (!action.type){
+  if (!action.type && process.env.NODE_ENV === 'development'){
     console.log(action)
-    throw new Error(`The action has no type. You probably forgot to resolve the mapping between normalized data and a new action type. This usually happens when there is data that can be unexpectedly normalized. Make sure all of your schemas are accounted for in your schemaDispatchResolver.`)
-    return next(action)
+    throw new Error(`The action has no type. You probably forgot to resolve the mapping between normalized data and a new action type. This usually happens when there is data that can be unexpectedly normalized. Make sure all of your schemas are accounted for in your schemaToActionTypeResolver.`)
   }
   if (action.type.startsWith('RESOLVED')) {
     // console.log('we made it')
@@ -18,7 +17,7 @@ const normalizrMiddleware = config => store => next => action => {
     match = active.find(active[type]);
   } else if (typeof active === 'function') {
     match = active(action);
-  } else {
+  } else if (process.env.NODE_ENV === 'development'){
     throw new Error('parameter "active" must be an object, array, or function');
   }
   if (match) {
