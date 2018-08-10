@@ -12,7 +12,8 @@ const createDefaultOptions = ({
   schemaToActionTypeResolver,
   stalenessResolver = defaultStalenessResolver,
   dispatchResolver = defaultDispatchResolver,
-  normalizrResolver = defaultNormalizrResolver
+  normalizrResolver = defaultNormalizrResolver,
+  defaultConfig = true
 }) => {
   return {
     active: action =>
