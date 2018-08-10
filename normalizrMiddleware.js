@@ -3,7 +3,6 @@ const normalizrMiddleware = config => store => next => action => {
   const { active, targets, schemas, resolve } = config;
   let match;
   if (!action.type && process.env.NODE_ENV === 'development' && config.defaultConfig){
-    console.log(action)
     throw new Error(`The action has no type. You probably forgot to resolve the mapping between normalized data and a new action type. This usually happens when there is data that can be unexpectedly normalized. Make sure all of your schemas are accounted for in your schemaToActionTypeResolver.`)
   }
   if (action.type.startsWith('RESOLVED')) {

@@ -1,4 +1,5 @@
-export const createActionResolverCase = (slice, schema) => ({
+export const createActionResolverCase = ([slice, schema]) => ({
   slice,
   schema
-});
+})
+
