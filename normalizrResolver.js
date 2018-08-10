@@ -29,6 +29,7 @@ const defaultNormalizrResolver = (action, actionResolver) => {
     }
     then whatever accepts deaultnromalzirresolver needs to accept an array instaed of one object
   */
+
 };
 
 export default defaultNormalizrResolver;
