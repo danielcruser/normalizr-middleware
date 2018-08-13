@@ -1,19 +1,24 @@
-const defaultDispatchResolver = (store, normalizedDataArray, map) => {
-  /* need to convert this to expect normalizedData as an array even if length 1
-  then we can map over it and dispatch */
+const defaultDispatchResolver = (store, action, normalizedDataArray, map) => {
   return normalizedDataArray.map(normalizedData => {
     const entities = Object.entries(normalizedData.entities);
     if (typeof map === 'object') {
-      return entities.forEach(([entity, data]) =>
+      return entities.forEach(([entity, data]) => {
+        let type
+        if (typeof map[entity] === 'string') {
+          type = map[entity]
+        } else if (typeof map[entity] === 'function') {
+          type = map[entity](action)
+        }
         store.dispatch({
-          type: map[entity],
+          type,
           payload: data
         })
+      }
       );
     } else if (typeof map === 'function') {
       return entities.forEach(([entity, data]) =>
         store.dispatch({
-          type: map(entity),
+          type: map(entity, action),
           payload: data
         })
       );

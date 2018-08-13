@@ -25,7 +25,7 @@ const createDefaultOptions = ({
       const shouldNormalize = stalenessResolver(store.getState(), action)
       if (shouldNormalize){
         const normalizedData = normalizrResolver(action, actionResolver);
-        dispatchResolver(store, normalizedData, schemaToActionTypeResolver);
+        dispatchResolver(store, action, normalizedData, schemaToActionTypeResolver);
       }
     }
   };
