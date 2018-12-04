@@ -1,9 +1,8 @@
 const configureNormalizrMiddleware = (
   middleWare,
-  { schemas, active, targets, resolve }
+  { schemas, active, targets, resolve, ignore }
 ) => {
   /* configure middleWare here
-
 
 
   */
@@ -12,7 +11,8 @@ const configureNormalizrMiddleware = (
     schemas,
     active,
     targets,
-    resolve
+    resolve,
+    ignore
   });
 };
 
