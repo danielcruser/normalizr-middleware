@@ -3,7 +3,6 @@ import configureNormalizrMiddleware from './configureNormalizrMiddleware';
 import defaultDispatchResolver from './dispatchResolver';
 import defaultNormalizrResolver from './normalizrResolver';
 import createStalenessResolver from './stalenessResolver'
-import { createActionResolverCase } from './utils';
 
 const defaultStalenessResolver = () => true
 
@@ -25,9 +24,10 @@ const createDefaultOptions = ({
       const shouldNormalize = stalenessResolver(store.getState(), action)
       if (shouldNormalize){
         const normalizedData = normalizrResolver(action, actionResolver);
-        dispatchResolver(store, normalizedData, schemaToActionTypeResolver);
+        dispatchResolver(store, action, normalizedData, schemaToActionTypeResolver);
       }
-    }
+    },
+    ignore: action => action.type.startsWith('RESOLVED')
   };
 };
 
@@ -35,6 +35,5 @@ export {
   normalizrMiddleware,
   configureNormalizrMiddleware,
   createDefaultOptions,
-  createActionResolverCase,
   createStalenessResolver
 };

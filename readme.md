@@ -29,7 +29,7 @@ If the default options are used, the following two things must be supplied by th
   - Note: By default, an action is `active` if an actionResolver strategy exists for that action.
 
 If the default options are not used, the user must provide an options object with:
-1. An `active` property used to determine which actions to listen to. Can be an `object`, `array` (not recommended), or `function`. If an `object` or `array`, it will check for truthiness of `action.type`. If a `function`, it will pass it the entire action, to allow the user to determine resolution.
+1. An `active` property used to determine which actions to listen to. Can be an `object` or `function`. If an `object`, it will check for truthiness of `action.type`. If a `function`, it will pass it the entire action, to allow the user to determine resolution.
 2. A `resolve` property - a function which accepts `store` and `action` which determines how to deal with those actions. (resolve does the work of both actionResolver and schemaToActionTypeResolver).
 
 -----
@@ -53,10 +53,6 @@ allow future flexibility.
   dispatchResolver = defaultDispatchResolver,
   normalizrResolver = defaultNormalizrResolver
 }) => options // ({ resolve, active })
-```
-`createActionResolverCase`: A utility function that preps data for consumption by defaultNormalizrResolver.
-```
-([slice, schema]) => ({ slice, schema })
 ```
 
 `createStalenessResolver`: A utility higher order function that creates a `stalenessResolver`
@@ -89,7 +85,6 @@ Then, we create our resolver strategies. We get the same benefits from using sel
 `resolvers.js`
 ```
 import * as constants from 'path/to/consants/normalizrConstants';
-import { createActionResolverCase } from 'normalizr-middleware';
 import { user, team, teamMember } from '../schemas';
 
 export const schemaToActionTypeResolver = {
@@ -98,12 +93,12 @@ export const schemaToActionTypeResolver = {
   teamMembers: constants.RESOLVED_TEAM_MEMBERS
 };
 
-const selectFetchTeamsSuccess = action => action.payload.response.teams;
+const selectFetchTeamsSuccess = action => action.payload.response.teams; // selector
+const onFetchTeamsSuccess = [selectFetchTeamsSuccess, [team]] // (selector, schema) tuple
 
 export const actionResolver = {
-  FETCH_TEAMS_SUCCESS: () =>
-    [[selectFetchTeamsSuccess, [team]]].map(createActionResolverCase)
-    // array of arrays in case we want to select/act onx1 multiple unrelated parts of the action
+  FETCH_TEAMS_SUCCESS: () => [onFetchTeamsSuccess]
+    // array of arrays in case we want to select/act on multiple unrelated parts of the action in the future
 };
 
 ```
@@ -143,7 +138,7 @@ In order to listen to another API response, we only need to:
 -----
 ### Advanced
   Staleness Resolver:
-  - One drawback of generic matching/normalizing criteria is that the browser may spend time calculating normalization unneccesarily. If this is causing performance issues, you can pass a `stalenessResolver` to createDefaultOptions that will decide when to skip the normalization step.
+  - One drawback of generic matching/normalizing criteria is that the browser may spend time calculating normalization unnecessarily. If this is causing performance issues, you can pass a `stalenessResolver` to createDefaultOptions that will decide when to skip the normalization step.
 ### Example
   `stalenessResolver.js`
   ```
