@@ -1,20 +1,20 @@
 import { errors } from './utils'
 
-const getActionType = (map, entity, action) => {
-  if (typeof map === 'function') {
-    return map(entity, action)
+const getActionType = (schemaResolver, entity, action) => {
+  if (typeof schemaResolver === 'function') {
+    return schemaResolver(entity, action)
   }
-  else if (typeof map === 'object') {
-    if (typeof map[entity] === 'string') {
-      return map[entity]
-    } else if (typeof map[entity] === 'function') {
-      return map[entity](action)
+  else if (typeof schemaResolver === 'object') {
+    if (typeof schemaResolver[entity] === 'string') {
+      return schemaResolver[entity]
+    } else if (typeof schemaResolver[entity] === 'function') {
+      return schemaResolver[entity](action)
     }
   }
   console.error(errors.incorrectMapType())
 }
 
-const defaultDispatchResolver = (store, action, normalizedDataArray, map) =>
+const defaultDispatchResolver = (store, action, normalizedDataArray, schemaResolver) =>
   normalizedDataArray.map(normalizedData => {
     const entities = Object.entries(normalizedData.entities);
     if (!Array.isArray(entities)) {
@@ -22,7 +22,7 @@ const defaultDispatchResolver = (store, action, normalizedDataArray, map) =>
       return
     }
     return entities.forEach(([entity, data]) => {
-      const actionType = getActionType(map, entity, action)
+      const actionType = getActionType(schemaResolver, entity, action)
       return actionType ? store.dispatch({
         type: actionType,
         payload: data
